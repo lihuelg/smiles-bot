@@ -1,0 +1,27 @@
+parameters: {}
+environment: 
+  ENV: 'production'
+  TRACE_LEVEL: 1
+packages:
+    - name: smiles
+      shared: false
+      environment: {}
+      parameters: {}
+      annotations: {}
+      functions:
+        - name: search
+          binary: false
+          main: "handler"
+          runtime: nodejs:18
+          web: true
+          webSecure: false
+          parameters: {}
+          environment: 
+            TELEGRAM_TOKEN: "${TELEGRAM_TOKEN}"
+            SMILES_CLIENT_ID: "${SMILES_CLIENT_ID}"
+            SMILES_CLIENT_SECRET: "${SMILES_CLIENT_SECRET}"
+            SMILES_API_KEY: "${SMILES_API_KEY}"
+            TRACE_LEVEL: "${TRACE_LEVEL}"
+          annotations: {}
+          limits: 
+            timeout: 120000

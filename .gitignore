@@ -1,0 +1,15 @@
+# Digital Ocean Serverless
+.nimbella
+.deployed
+__deployer__.zip
+__pycache__/
+
+# Enviroment variables
+.env
+
+# OS files
+.DS_Store
+
+# NPM
+node_modules
+package-lock.json
