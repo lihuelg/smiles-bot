@@ -5,6 +5,9 @@ import { getChunksOf } from "../utils/array.js";
 import { logError, logMessage, logTime, logTimeEnd } from "../utils/log.js";
 
 let ACCESS_TOKEN;
+let TOKEN_EXPIRES_IN;
+
+const isTokenExpired = () => Date.now() > TOKEN_EXPIRES_IN;
 
 const getToken = () => {
     return axios
@@ -24,6 +27,7 @@ const getToken = () => {
         )
         .then((response) => {
             ACCESS_TOKEN = response.data.access_token;
+            TOKEN_EXPIRES_IN = Date.now() + response.data.expires_in * 1000;
         })
         .catch((err) => {
             logError(`error getting Smiles access token: ${err.message}`);
@@ -92,7 +96,7 @@ export const searchForBestMonthFlights = async ({
     destinationAirportCode,
     departureDate,
 }) => {
-    if (!ACCESS_TOKEN) {
+    if (!ACCESS_TOKEN || isTokenExpired()) {
         await getToken();
     }
     logMessage(
@@ -104,7 +108,7 @@ export const searchForBestMonthFlights = async ({
     const departureDates = getAllDateInMonth(departureDate);
 
     // separate the departureDates in chunks of 10
-    const chunks = getChunksOf(departureDates, 10);
+    const chunks = getChunksOf(departureDates, 7);
     const flights = [];
 
     // run the search for each chunk

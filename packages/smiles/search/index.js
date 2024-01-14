@@ -3,6 +3,7 @@ config();
 
 import { searchForBestMonthFlights } from "./api/smiles.js";
 import { transformFlightsForChatBot } from "./utils/flights.js";
+import { logError } from "./utils/log.js";
 
 import { Telegraf } from "telegraf";
 
@@ -29,13 +30,18 @@ bot.command("buscar", async (ctx) => {
     const [originAirportCode, destinationAirportCode, departureDate] =
         ctx.message.text.split(" ").slice(1);
 
-    const bestDayFlights = await searchForBestMonthFlights({
-        originAirportCode,
-        destinationAirportCode,
-        departureDate,
-    });
-
-    const message = transformFlightsForChatBot(bestDayFlights).join("\n");
+    let message;
+    try {
+        const bestDayFlights = await searchForBestMonthFlights({
+            originAirportCode,
+            destinationAirportCode,
+            departureDate,
+        });
+        message = transformFlightsForChatBot(bestDayFlights).join("\n");
+    } catch(err) {
+        logError(`error while searching for best flights: ${err}`);
+        message = "Algo salio mal, intenta nuevamente";
+    }
 
     bot.telegram.sendMessage(ctx.chat.id, message, {
         parse_mode: "MarkdownV2",

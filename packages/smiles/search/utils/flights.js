@@ -19,8 +19,8 @@ export const getBestDayFlight = (flights) => {
 
         if (
             !cheapestFlight ||
-            (cheapestFare.miles > smilesClubFare.miles &&
-                cheapestFare.airlineTax > smilesClubFare.airlineTax)
+            cheapestFare.miles > smilesClubFare.miles
+            // && cheapestFare.airlineTax > smilesClubFare.airlineTax)
         ) {
             cheapestFlight = flight;
             cheapestFare = smilesClubFare;
@@ -39,10 +39,10 @@ export const transformFlightsForChatBot = (flights) =>
 
             return `🛫 [${getFlightDateForChatBot(flight)}](${getFlightUrl(
                 flight
-            )}): *${smilesClubFare.miles}* \\+ $${parseInt(
-                smilesClubFare.airlineTax
-            )}, *${flight.airline.name}*, ${flight.duration.hours}:${
+            )}): *${smilesClubFare.miles}* \\+ $${
+                parseInt(smilesClubFare.airlineTax) +
+                parseInt(smilesClubFare.airlineFareAmount)
+            }, *${flight.airline.name}*, ${flight.duration.hours}:${
                 flight.duration.minutes
             }hs, *${flight.cabin}*, 💺 ${flight.availableSeats}`;
         });
-
